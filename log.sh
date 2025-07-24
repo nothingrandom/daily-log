@@ -17,24 +17,42 @@ else
   echo "Log file already exists: $LOG_FILE"
 fi
 
-# Ask the user how to open the file
-PS3="Open file with: "
-select editor in vscode nano vim quit; do
-  case $editor in
-    vscode)
-      code "$LOG_FILE"
-      break
-      ;;
-    nano)
-      nano "$LOG_FILE"
-      break
-      ;;
-    vim)
-      vim "$LOG_FILE"
-      break
-      ;;
-    quit)
-      break
-      ;;
-  esac
-done
+# Check if an editor was passed as an argument
+if [ -n "$1" ]; then
+    case "$1" in
+        vscode)
+            code "$LOG_FILE"
+            ;;
+        nano)
+            nano "$LOG_FILE"
+            ;;
+        vim)
+            vim "$LOG_FILE"
+            ;;
+        *)
+            echo "Invalid editor: $1"
+            ;;
+    esac
+else
+    # Ask the user how to open the file
+    PS3="Open file with: "
+    select editor in vscode nano vim quit; do
+      case $editor in
+        vscode)
+          code "$LOG_FILE"
+          break
+          ;;
+        nano)
+          nano "$LOG_FILE"
+          break
+          ;;
+        vim)
+          vim "$LOG_FILE"
+          break
+          ;;
+        quit)
+          break
+          ;;
+      esac
+    done
+fi
