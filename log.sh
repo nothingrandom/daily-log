@@ -1,5 +1,19 @@
 #!/bin/bash
 
+# Get yesterday's date
+YESTERDAY=$(date -v-1d +%Y-%m-%d)
+YESTERDAY_LOG_FILE="daily/$YESTERDAY.md"
+YESTERDAY_COMMIT_TIMESTAMP="${YESTERDAY}T23:59:59"
+
+# Check for uncommitted changes in yesterday's log file and commit them
+if [ -f "$YESTERDAY_LOG_FILE" ]; then
+  if [ -n "$(git status --porcelain "$YESTERDAY_LOG_FILE")" ]; then
+    git add "$YESTERDAY_LOG_FILE"
+    GIT_COMMITTER_DATE="${YESTERDAY_COMMIT_TIMESTAMP}" git commit --date="${YESTERDAY_COMMIT_TIMESTAMP}" -m "docs: log for $YESTERDAY"
+    echo "Committed changes for $YESTERDAY_LOG_FILE"
+  fi
+fi
+
 # Get the current date
 DATE=$(date +%Y-%m-%d)
 
